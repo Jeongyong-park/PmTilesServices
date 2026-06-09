@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: pmtiles-boilerplate
+
+logging:
+  level:
+    kr.pe.jypark.example: INFO

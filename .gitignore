@@ -1,0 +1,18 @@
+# --- Backend (Maven / Java) ---
+backend/target/
+*.class
+
+# --- Frontend (Node / Vite) ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# --- User-supplied binary assets (not committed) ---
+backend/src/main/resources/data/*.pmtiles
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

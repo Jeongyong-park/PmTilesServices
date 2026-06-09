@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/maplibremap.tsx","./src/components/openlayersmap.tsx","./src/styles/basemap-style.ts"],"version":"5.9.3"}
