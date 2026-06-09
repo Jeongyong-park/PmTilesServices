@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -39,6 +40,13 @@ public class TileApiController {
 
     /** 단일 Range 요청 최대 크기 (100MB) — 악의적 대용량 요청 방지 */
     private static final long MAX_RANGE_SIZE = 100L * 1024 * 1024;
+
+    /**
+     * 외부 파일시스템 PMTiles 경로 (Docker 볼륨 매핑용). 비어 있으면 classpath 리소스로 폴백.
+     * 예: {@code PMTILES_PATH=/data/south-korea.pmtiles}
+     */
+    @org.springframework.beans.factory.annotation.Value("${pmtiles.path:}")
+    private String configuredPmtilesPath;
 
     /** classpath 리소스를 실제 파일 경로로 1회 해석한 결과 (jar 실행 시 임시 파일). */
     private volatile Path cachedPmtilesPath;
@@ -125,6 +133,11 @@ public class TileApiController {
      * 임시 파일로 복사하여 {@link RandomAccessFile} 의 효율적인 seek 를 가능하게 한다.
      */
     private Path resolvePmtilesPath() throws IOException {
+        // 1순위: 설정된 외부 경로(볼륨). 파일시스템 직접 접근이라 RandomAccessFile seek 효율적.
+        if (configuredPmtilesPath != null && !configuredPmtilesPath.isBlank()) {
+            return Paths.get(configuredPmtilesPath);
+        }
+        // 2순위: classpath 리소스 폴백 (1회 해석 후 캐시)
         Path local = cachedPmtilesPath;
         if (local != null) {
             return local;

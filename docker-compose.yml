@@ -1,0 +1,28 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pmtiles-boilerplate:latest
+    container_name: pmtiles-app
+    ports:
+      - "8080:8080"
+    environment:
+      PMTILES_PATH: /data/south-korea.pmtiles
+    volumes:
+      # 호스트 데이터 디렉터리를 읽기전용 마운트. 내부의 south-korea.pmtiles 를 PMTILES_PATH 로 가리킨다.
+      # 단일 파일이 아닌 "디렉터리"를 마운트 — 파일이 없을 때 Docker 가 빈 디렉터리를 만드는 함정 회피.
+      #
+      # ⚠️ Docker Desktop(WSL2)이 프로젝트가 있는 드라이브를 공유하지 않으면(예: D: 미공유)
+      #    bind 마운트가 비어 보인다. 그 경우 .env 의 PMTILES_DATA_DIR 을 공유되는 드라이브
+      #    경로(예: C:/pmtiles-data)로 지정하라. 기본값은 ./data.
+      - ${PMTILES_DATA_DIR:-./data}:/data:ro
+    restart: unless-stopped
+    healthcheck:
+      # SPA 루트(정적, 가벼움)로 헬스 체크. pmtiles 엔드포인트는 비-Range HEAD 시
+      # 전체 파일을 읽으므로 헬스체크 대상으로 부적합.
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

@@ -4,6 +4,15 @@ server:
 spring:
   application:
     name: pmtiles-boilerplate
+  # 정적 프론트엔드(빌드된 Vite dist) + 대용량 응답 허용
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+# PMTiles 파일 경로. 비어 있으면 classpath:data/south-korea.pmtiles 로 폴백.
+# Docker 볼륨 매핑 시 PMTILES_PATH 환경변수로 외부 파일 지정 (예: /data/south-korea.pmtiles)
+pmtiles:
+  path: ${PMTILES_PATH:}
 
 logging:
   level:

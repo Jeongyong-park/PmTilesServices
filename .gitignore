@@ -9,6 +9,11 @@ frontend/.vite/
 
 # --- User-supplied binary assets (not committed) ---
 backend/src/main/resources/data/*.pmtiles
+# Docker 볼륨 마운트용 host pmtiles
+/data/*.pmtiles
+
+# 로컬 환경설정 (PMTILES_DATA_DIR 등 머신별 경로)
+.env
 
 # --- IDE / OS ---
 .idea/
